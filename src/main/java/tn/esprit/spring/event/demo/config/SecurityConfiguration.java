@@ -39,7 +39,7 @@ public class SecurityConfiguration {
 
                 // Authorization rules
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/apii/auth/**", "/Reset-Password-Request", "/resetPassword", "/register", "/login")
+                        .requestMatchers("/apii/auth/**", "/Reset-Password-Request", "/resetPassword", "/register", "/authenticate")
                         .permitAll()
                         .requestMatchers("/api/**")
                         .hasAnyRole(ADMIN.name(), CLIENT.name())

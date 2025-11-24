@@ -1,0 +1,84 @@
+package tn.esprit.spring.event.demo.Controller;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+import tn.esprit.spring.event.demo.Model.FeedBack;
+import tn.esprit.spring.event.demo.Model.User;
+import tn.esprit.spring.event.demo.Repository.UserRepository;
+import tn.esprit.spring.event.demo.Service.FeedBackService;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/feedback")
+@RequiredArgsConstructor
+@CrossOrigin("*")
+public class FeedBackController {
+
+    private final FeedBackService feedbackService;
+    private final UserRepository userRepository;
+
+    // ➤ Ajouter un feedback (user connecté)
+    @PostMapping("/event/{eventId}")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
+
+    public FeedBack addFeedback(@PathVariable Long eventId,
+                                @RequestBody FeedBack feedback,
+                                Authentication authentication) {
+
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return feedbackService.addFeedback(eventId, user.getId(), feedback);
+    }
+
+    // ➤ Modifier un feedback
+    @PutMapping("/{feedbackId}")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
+
+    public FeedBack updateFeedback(@PathVariable Long feedbackId,
+                                   @RequestBody FeedBack feedback) {
+        return feedbackService.updateFeedback(feedbackId, feedback);
+    }
+
+    // ➤ Supprimer un feedback
+    @DeleteMapping("/{feedbackId}")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
+
+    public String deleteFeedback(@PathVariable Long feedbackId) {
+        feedbackService.deleteFeedback(feedbackId);
+        return "Feedback supprimé avec succès";
+    }
+
+    // ➤ Récupérer un feedback
+    @GetMapping("/{feedbackId}")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
+
+    public FeedBack getFeedback(@PathVariable Long feedbackId) {
+        return feedbackService.getFeedback(feedbackId);
+    }
+
+    // ➤ Récupérer tous les feedbacks
+    @GetMapping
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
+
+    public List<FeedBack> getAll() {
+        return feedbackService.getAllFeedback();
+    }
+
+    // ➤ Récupérer les feedbacks d'un événement
+    @GetMapping("/event/{eventId}")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
+
+    public List<FeedBack> getFeedbackByEvent(@PathVariable Long eventId) {
+        return feedbackService.getFeedbackByEvent(eventId);
+    }
+
+    // ➤ Récupérer les feedbacks d'un user
+    @GetMapping("/user/{userId}")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
+    public List<FeedBack> getFeedbackByUser(@PathVariable Long userId) {
+        return feedbackService.getFeedbackByUser(userId);
+    }
+}
