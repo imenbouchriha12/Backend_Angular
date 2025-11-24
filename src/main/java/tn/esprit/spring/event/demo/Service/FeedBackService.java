@@ -1,12 +1,13 @@
 package tn.esprit.spring.event.demo.Service;
 
 import tn.esprit.spring.event.demo.Model.FeedBack;
+import tn.esprit.spring.event.demo.Model.User;
 
 import java.util.List;
 
 public interface FeedBackService {
 
-    FeedBack addFeedback(Long eventId, Long userId, FeedBack feedback);
+    FeedBack addFeedback(Long eventId, User user, FeedBack feedback);
 
     FeedBack updateFeedback(Long id, FeedBack feedback);
 
@@ -18,5 +19,5 @@ public interface FeedBackService {
 
     List<FeedBack> getFeedbackByEvent(Long eventId);
 
-    List<FeedBack> getFeedbackByUser(Long userId);
+    List<FeedBack> getFeedbackByUser(User user);
 }

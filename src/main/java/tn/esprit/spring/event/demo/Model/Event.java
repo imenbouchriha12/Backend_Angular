@@ -1,5 +1,6 @@
 package tn.esprit.spring.event.demo.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDate;
@@ -8,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "events")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

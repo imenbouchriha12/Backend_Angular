@@ -20,10 +20,7 @@ public class FeedbackServiceImpl implements FeedBackService {
     private final EventRepository eventRepository;
 
     @Override
-    public FeedBack addFeedback(Long eventId, Long userId, FeedBack feedback) {
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public FeedBack addFeedback(Long eventId, User user, FeedBack feedback) {
 
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
@@ -68,7 +65,10 @@ public class FeedbackServiceImpl implements FeedBackService {
     }
 
     @Override
-    public List<FeedBack> getFeedbackByUser(Long userId) {
-        return feedbackRepository.findByUser_Id(userId);
+    public List<FeedBack> getFeedbackByUser(User user) {
+        return feedbackRepository.findByUser_Id(user.getId());
     }
+
+
+
 }

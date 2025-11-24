@@ -20,17 +20,17 @@ public class FeedBackController {
     private final FeedBackService feedbackService;
     private final UserRepository userRepository;
 
-    // ➤ Ajouter un feedback (user connecté)
     @PostMapping("/event/{eventId}")
     @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
-
     public FeedBack addFeedback(@PathVariable Long eventId,
                                 @RequestBody FeedBack feedback,
                                 Authentication authentication) {
 
+        // ⚠ authentication.getName() retourne l'email du user connecté
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        return feedbackService.addFeedback(eventId, user.getId(), feedback);
+
+        return feedbackService.addFeedback(eventId, user, feedback);
     }
 
     // ➤ Modifier un feedback
@@ -75,10 +75,27 @@ public class FeedBackController {
         return feedbackService.getFeedbackByEvent(eventId);
     }
 
-    // ➤ Récupérer les feedbacks d'un user
-    @GetMapping("/user/{userId}")
-    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
-    public List<FeedBack> getFeedbackByUser(@PathVariable Long userId) {
-        return feedbackService.getFeedbackByUser(userId);
+    // ➤ Récupérer tous les feedbacks user connecté
+    @GetMapping("/my")
+    @PreAuthorize("hasAnyRole('CLIENT','ADMIN')")
+    public List<FeedBack> getMyFeedbacks(Authentication authentication) {
+
+        // 1️⃣ Get email from JWT
+        String email = authentication.getName();
+
+        // 2️⃣ Load user from DB
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // 3️⃣ Return feedbacks of this user
+        return feedbackService.getFeedbackByUser(user);
     }
+
+    @GetMapping("/test")
+    public String test(Authentication auth) {
+        System.out.println("USER = " + auth.getName());
+        System.out.println("ROLES = " + auth.getAuthorities());
+        return auth.getAuthorities().toString();
+    }
+
 }
