@@ -20,4 +20,6 @@ public interface FeedBackService {
     List<FeedBack> getFeedbackByEvent(Long eventId);
 
     List<FeedBack> getFeedbackByUser(User user);
+    FeedBack getFeedbackById(Long feedbackId);
+
 }

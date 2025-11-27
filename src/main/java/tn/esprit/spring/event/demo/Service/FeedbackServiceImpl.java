@@ -69,6 +69,11 @@ public class FeedbackServiceImpl implements FeedBackService {
         return feedbackRepository.findByUser_Id(user.getId());
     }
 
+    @Override
+    public FeedBack getFeedbackById(Long feedbackId) {
+        return feedbackRepository.findById(feedbackId)
+                .orElseThrow(() -> new RuntimeException("Feedback introuvable"));
+    }
 
 
 }
